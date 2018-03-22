@@ -26,6 +26,7 @@ package be.yildizgames.module.window.swt;
 
 import be.yildizgames.module.coordinate.Size;
 import be.yildizgames.module.window.Cursor;
+import be.yildizgames.module.window.ScreenSize;
 import be.yildizgames.module.window.WindowEngine;
 import be.yildizgames.module.window.WindowHandle;
 import be.yildizgames.module.window.input.WindowInputListener;
@@ -124,7 +125,7 @@ public final class SwtWindowEngine implements WindowEngine {
     }
 
     @Override
-    public final Size getScreenSize() {
+    public final ScreenSize getScreenSize() {
         return this.gameWindow.getScreenSize();
     }
 

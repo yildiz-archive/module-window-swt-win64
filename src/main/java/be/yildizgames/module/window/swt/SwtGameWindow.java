@@ -25,18 +25,10 @@
 package be.yildizgames.module.window.swt;
 
 import be.yildizgames.common.exception.technical.ResourceMissingException;
-import be.yildizgames.common.os.SystemUtil;
-import be.yildizgames.module.coordinate.Size;
+import be.yildizgames.module.window.ScreenSize;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.PaletteData;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.opengl.GLCanvas;
-import org.eclipse.swt.opengl.GLData;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Monitor;
@@ -88,7 +80,7 @@ final class SwtGameWindow {
     /**
      * Game window size.
      */
-    private Size screenSize;
+    private ScreenSize screenSize;
 
     /**
      * Full constructor.
@@ -123,16 +115,16 @@ final class SwtGameWindow {
         this.loadingBackground = new Image(this.shell.getDisplay(), tmpImage.getImageData().scaledTo(this.shell.getBounds().width, this.shell.getBounds().height));
         this.shell.setCursor(this.invisibleCursor);
         this.shell.setBackgroundImage(this.loadingBackground);
-        if (SystemUtil.isLinux()) {
+        /*if (SystemUtil.isLinux()) {
             LOGGER.info("Loading GL context...");
             final GLData data = new GLData();
             data.doubleBuffer = true;
             this.canvas = new GLCanvas(this.shell, SWT.NONE, data);
             GLCanvas.class.cast(this.canvas).setCurrent();
             LOGGER.info("GL context loaded.");
-        } else {
+        } else {*/
             this.canvas = new Canvas(this.shell, SWT.NONE);
-        }
+        //}
         this.canvas.setSize(this.shell.getSize());
         this.shell.setLayout(new FillLayout());
     }
@@ -169,7 +161,7 @@ final class SwtGameWindow {
         this.shell.setFocus();
         final Monitor m = Display.getDefault().getPrimaryMonitor();
         this.shell.setBounds(-1, -1, m.getBounds().width + 2, m.getBounds().height + 2);
-        this.screenSize = new Size(m.getBounds().width, m.getBounds().height);
+        this.screenSize = new ScreenSize(m.getBounds().width, m.getBounds().height);
     }
 
     /**
@@ -229,7 +221,7 @@ final class SwtGameWindow {
     /**
      * @return The game window size.
      */
-    public Size getScreenSize() {
+    public ScreenSize getScreenSize() {
         return this.screenSize;
     }
 }
