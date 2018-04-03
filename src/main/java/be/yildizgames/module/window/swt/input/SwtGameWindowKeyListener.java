@@ -25,6 +25,7 @@
 package be.yildizgames.module.window.swt.input;
 
 import be.yildizgames.module.window.input.ArrowKey;
+import be.yildizgames.module.window.input.Key;
 import be.yildizgames.module.window.input.SpecialKey;
 import be.yildizgames.module.window.input.WindowInputListener;
 import org.eclipse.swt.SWT;
@@ -101,6 +102,7 @@ public final class SwtGameWindowKeyListener implements KeyListener {
             switch (event.keyCode) {
                 case ENTER:
                     this.dispatcher.keyboardEnterKeyPressed();
+                    this.dispatcher.keyPressed(Key.ENTER);
                     break;
                 case SWT.BS:
                     this.dispatcher.keyboardDeleteKeyPressed();
