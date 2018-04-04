@@ -10,7 +10,7 @@ The swt module is an implementation of the window-module, based on SWT library f
 
 ## Requirements
 
-To build this module, you will need a java 9 JDK, and Maven 3.
+To build this module, you will need a the latest JDK, and Maven 3.
 
 ## Coding Style and other information
 
