@@ -27,51 +27,52 @@ package be.yildizgames.module.window.swt.input;
 
 import be.yildizgames.module.window.input.Key;
 import be.yildizgames.module.window.input.KeyValue;
+import org.eclipse.swt.SWT;
 
 public class SwtKeyValue implements KeyValue {
 
     @Override
     public Key esc() {
-        return null;
+        return Key.valueOf(27);
     }
 
     @Override
     public Key ctrl() {
-        return null;
+        return Key.valueOf(262144);
     }
 
     @Override
     public Key tab() {
-        return null;
+        return Key.valueOf(9);
     }
 
     @Override
     public Key enter() {
-        return null;
+        return Key.valueOf(13);
     }
 
     @Override
     public Key left() {
-        return null;
+        return Key.valueOf(SWT.ARROW_LEFT);
     }
 
     @Override
     public Key up() {
-        return null;
+        return Key.valueOf(SWT.ARROW_UP);
     }
 
     @Override
     public Key right() {
-        return null;
+        return Key.valueOf(SWT.ARROW_RIGHT);
     }
 
     @Override
     public Key down() {
-        return null;
+        return Key.valueOf(SWT.ARROW_DOWN);
     }
 
     @Override
     public Key delete() {
-        return null;
+        return Key.valueOf(SWT.BS);
     }
 }
