@@ -28,6 +28,9 @@ package be.yildizgames.module.window.swt;
 import be.yildizgames.module.window.WindowEngine;
 import be.yildizgames.module.window.WindowEngineProvider;
 
+/**
+ * @author Grégory Van den Borre
+ */
 public class SwtWindowEngineProvider implements WindowEngineProvider {
 
     @Override

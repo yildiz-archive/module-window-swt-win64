@@ -27,14 +27,17 @@ package be.yildizgames.module.window.swt;
 import be.yildizgames.common.exception.technical.ResourceMissingException;
 import be.yildizgames.module.window.ScreenSize;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 
@@ -44,8 +47,6 @@ import java.io.InputStream;
  * @author Grégory Van den Borre
  */
 final class SwtGameWindow {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SwtGameWindow.class);
 
     /**
      * Flag to enable or not the full screen mode when building the window.
@@ -115,16 +116,7 @@ final class SwtGameWindow {
         this.loadingBackground = new Image(this.shell.getDisplay(), tmpImage.getImageData().scaledTo(this.shell.getBounds().width, this.shell.getBounds().height));
         this.shell.setCursor(this.invisibleCursor);
         this.shell.setBackgroundImage(this.loadingBackground);
-        /*if (SystemUtil.isLinux()) {
-            LOGGER.info("Loading GL context...");
-            final GLData data = new GLData();
-            data.doubleBuffer = true;
-            this.canvas = new GLCanvas(this.shell, SWT.NONE, data);
-            GLCanvas.class.cast(this.canvas).setCurrent();
-            LOGGER.info("GL context loaded.");
-        } else {*/
-            this.canvas = new Canvas(this.shell, SWT.NONE);
-        //}
+        this.canvas = new Canvas(this.shell, SWT.NONE);
         this.canvas.setSize(this.shell.getSize());
         this.shell.setLayout(new FillLayout());
     }
