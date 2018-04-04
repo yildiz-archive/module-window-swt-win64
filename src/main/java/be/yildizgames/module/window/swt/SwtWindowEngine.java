@@ -24,7 +24,6 @@
 
 package be.yildizgames.module.window.swt;
 
-import be.yildizgames.module.coordinate.Size;
 import be.yildizgames.module.window.Cursor;
 import be.yildizgames.module.window.ScreenSize;
 import be.yildizgames.module.window.WindowEngine;
@@ -132,7 +131,9 @@ public final class SwtWindowEngine implements WindowEngine {
     @Override
     public void registerInput(final WindowInputListener listener) {
         new SwtGameWindowMouseListener(this.gameWindow.getCanvas(), listener);
-        new SwtGameWindowKeyListener(this.gameWindow.getCanvas(), listener);
+        SwtGameWindowKeyListener kl = SwtGameWindowKeyListener.create(listener);
+        this.gameWindow.getCanvas().addKeyListener(kl);
+        this.gameWindow.getCanvas().setFocus();
 
     }
 }

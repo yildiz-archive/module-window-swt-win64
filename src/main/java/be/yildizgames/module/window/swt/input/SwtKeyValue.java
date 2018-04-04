@@ -26,53 +26,68 @@
 package be.yildizgames.module.window.swt.input;
 
 import be.yildizgames.module.window.input.Key;
-import be.yildizgames.module.window.input.KeyValue;
 import org.eclipse.swt.SWT;
 
-public class SwtKeyValue implements KeyValue {
+import java.util.HashMap;
+import java.util.Map;
 
-    @Override
-    public Key esc() {
-        return Key.valueOf(27);
+class SwtKeyValue {
+
+    /**
+     * Minimum ASCII value to be considered as normal char.
+     */
+    private static final int MIN = 30;
+
+    /**
+     * Maximum ASCII value to be considered as normal char.
+     */
+    private static final int MAX = 256;
+
+    private Map<Integer, Key> keyMap = new HashMap<>();
+
+    SwtKeyValue() {
+        keyMap.put(27, Key.ESC);
+        keyMap.put(9, Key.TAB);
+        keyMap.put(SWT.CTRL, Key.CTRL);
+        keyMap.put(13, Key.ENTER);
+        keyMap.put(SWT.KEYPAD_CR, Key.ENTER);
+        keyMap.put(SWT.ARROW_LEFT, Key.LEFT);
+        keyMap.put(SWT.ARROW_UP, Key.UP);
+        keyMap.put(SWT.ARROW_RIGHT, Key.RIGHT);
+        keyMap.put(SWT.ARROW_DOWN, Key.DOWN);
     }
 
-    @Override
-    public Key ctrl() {
-        return Key.valueOf(262144);
+    Key getKey(int v) {
+        return keyMap.getOrDefault(v, Key.EMPTY);
     }
 
-    @Override
-    public Key tab() {
-        return Key.valueOf(9);
+    boolean isKeyboard(int keyCode) {
+        return keyCode > MIN && keyCode < MAX;
     }
 
-    @Override
-    public Key enter() {
-        return Key.valueOf(13);
+    boolean isNumpad(int keyCode) {
+        return keyCode >= SWT.KEYPAD_MULTIPLY && keyCode <= SWT.KEYPAD_EQUAL;
     }
 
-    @Override
-    public Key left() {
-        return Key.valueOf(SWT.ARROW_LEFT);
-    }
-
-    @Override
-    public Key up() {
-        return Key.valueOf(SWT.ARROW_UP);
-    }
-
-    @Override
-    public Key right() {
-        return Key.valueOf(SWT.ARROW_RIGHT);
-    }
-
-    @Override
-    public Key down() {
-        return Key.valueOf(SWT.ARROW_DOWN);
-    }
-
-    @Override
-    public Key delete() {
-        return Key.valueOf(SWT.BS);
+    public char fromNumpad(int code) {
+        switch (code) {
+            case SWT.KEYPAD_MULTIPLY: return '*';
+            case SWT.KEYPAD_ADD: return '+';
+            case SWT.KEYPAD_SUBTRACT: return '-';
+            case SWT.KEYPAD_DECIMAL: return '.';
+            case SWT.KEYPAD_DIVIDE: return '/';
+            case SWT.KEYPAD_0: return '0';
+            case SWT.KEYPAD_1: return '1';
+            case SWT.KEYPAD_2: return '2';
+            case SWT.KEYPAD_3: return '3';
+            case SWT.KEYPAD_4: return '4';
+            case SWT.KEYPAD_5: return '5';
+            case SWT.KEYPAD_6: return '6';
+            case SWT.KEYPAD_7: return '7';
+            case SWT.KEYPAD_8: return '8';
+            case SWT.KEYPAD_9: return '9';
+            case SWT.KEYPAD_EQUAL: return '=';
+            default: return '?';
+        }
     }
 }
