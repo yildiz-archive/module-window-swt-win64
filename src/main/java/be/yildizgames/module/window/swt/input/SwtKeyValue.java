@@ -69,7 +69,7 @@ class SwtKeyValue {
         return keyCode >= SWT.KEYPAD_MULTIPLY && keyCode <= SWT.KEYPAD_EQUAL;
     }
 
-    public char fromNumpad(int code) {
+    char fromNumpad(int code) {
         switch (code) {
             case SWT.KEYPAD_MULTIPLY: return '*';
             case SWT.KEYPAD_ADD: return '+';

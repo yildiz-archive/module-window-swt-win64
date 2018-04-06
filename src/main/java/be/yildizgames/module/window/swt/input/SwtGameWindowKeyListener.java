@@ -29,7 +29,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 
 /**
- * Class for the keyboard management. All event are catched here from SWT and
+ * Class for the keyboard management. All event are caught here from SWT and
  * then sent to the observer.
  *
  * @author Grégory Van den Borre
