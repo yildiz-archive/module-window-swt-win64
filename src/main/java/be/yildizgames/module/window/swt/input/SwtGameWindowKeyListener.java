@@ -29,7 +29,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 
 /**
- * Class for the keyboard management. All event are catched here from SWT and
+ * Class for the keyboard management. All event are caught here from SWT and
  * then sent to the observer.
  *
  * @author Grégory Van den Borre
@@ -90,10 +90,14 @@ public final class SwtGameWindowKeyListener implements KeyListener {
      */
     @Override
     public void keyReleased(final KeyEvent event) {
-        if (values.isKeyboard(event.keyCode)) {
-            this.dispatcher.keyboardKeyPressed(event.character);
+        this.keyReleasedImpl(event.keyCode, event.character);
+    }
+
+    void keyReleasedImpl(int code, char c) {
+        if (values.isKeyboard(code)) {
+            this.dispatcher.keyboardKeyReleased(c);
         } else {
-            this.dispatcher.specialKeyPressed(this.values.getKey(event.keyCode));
+            this.dispatcher.specialKeyReleased(this.values.getKey(code));
         }
     }
 }

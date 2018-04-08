@@ -66,11 +66,31 @@ public class SwtGameWindowKeyListenerTest {
         Assertions.assertEquals('0', lt.character);
     }
 
+    @Test
+    void testReleaseChar() {
+        ListenerTest lt = new ListenerTest();
+        SwtGameWindowKeyListener l = SwtGameWindowKeyListener.create(lt);
+        l.keyReleasedImpl(65, 'A');
+        Assertions.assertEquals('A', lt.releasedCharacter);
+    }
+
+    @Test
+    void testReleaseEnter() {
+        ListenerTest lt = new ListenerTest();
+        SwtGameWindowKeyListener l = SwtGameWindowKeyListener.create(lt);
+        l.keyReleasedImpl(13, '\0');
+        Assertions.assertEquals(Key.ENTER, lt.releasedKey);
+    }
+
     public static class ListenerTest implements WindowInputListener {
 
         char character;
 
         Key key;
+
+        char releasedCharacter;
+
+        Key releasedKey;
 
         @Override
         public void keyboardKeyPressed(char character) {
@@ -80,6 +100,16 @@ public class SwtGameWindowKeyListenerTest {
         @Override
         public void specialKeyPressed(Key key) {
             this.key = key;
+        }
+
+        @Override
+        public void keyboardKeyReleased(char character) {
+            this.releasedCharacter = character;
+        }
+
+        @Override
+        public void specialKeyReleased(Key key) {
+            this.releasedKey = key;
         }
     }
 }
