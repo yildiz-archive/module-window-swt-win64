@@ -92,8 +92,8 @@ final class SwtDisplayWrapper {
     Image buildImage(final String file) {
         try {
             return new Image(this.display, file);
-        } catch (final SWTException fnfe) {
-            throw new ResourceMissingException("File " + file + " not found");
+        } catch (final SWTException e) {
+            throw new ResourceMissingException("File " + file + " not found", e);
         }
     }
 
