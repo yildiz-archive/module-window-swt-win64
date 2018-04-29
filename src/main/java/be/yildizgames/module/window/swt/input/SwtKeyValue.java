@@ -46,6 +46,7 @@ class SwtKeyValue {
     private Map<Integer, Key> keyMap = new HashMap<>();
 
     SwtKeyValue() {
+        keyMap.put(8, Key.DELETE);
         keyMap.put(27, Key.ESC);
         keyMap.put(9, Key.TAB);
         keyMap.put(SWT.CTRL, Key.CTRL);
