@@ -35,18 +35,21 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Grégory Van den Borre
  */
-public final class SwtWindowHelper {
+public final class SwtWindow {
 
     /**
      * Associated display.
@@ -60,7 +63,7 @@ public final class SwtWindowHelper {
      */
     private final Map<String, Cursor> cursorList = new HashMap<>();
 
-    public SwtWindowHelper(final Shell shell) {
+    public SwtWindow(final Shell shell) {
         super();
         this.shell = shell;
         this.display = shell.getDisplay();
@@ -110,6 +113,10 @@ public final class SwtWindowHelper {
 
     public Button createButton(final String background, final String hover) {
         return this.createButton(this.getImage(background), this.getImage(hover));
+    }
+
+    public Button createButton() {
+        return new Button(this.shell, SWT.SMOOTH);
     }
 
     public Button createButton(final Image background, final Image hover) {
@@ -196,6 +203,44 @@ public final class SwtWindowHelper {
 
     public Shell getShell() {
         return shell;
+    }
+
+    public void show() {
+        this.shell.setVisible(true);
+    }
+
+    public void run() {
+        while (!shell.isDisposed() && shell.isVisible()) {
+            if (!this.display.readAndDispatch())
+                this.display.sleep();
+        }
+    }
+
+    public int getWidth() {
+        return this.shell.getSize().x;
+    }
+
+    public int getHeight() {
+        return this.shell.getSize().y;
+    }
+
+    public Text createInputBox() {
+        return new Text(this.shell, SWT.SINGLE);
+    }
+
+    public Combo createDropdown() {
+        return new Combo(this.shell, SWT.READ_ONLY);
+    }
+
+    public Combo createDropdown(Object[] items) {
+        Combo c = this.createDropdown();
+        c.setItems(Arrays.stream(items).map(Object::toString).toArray(String[]::new));
+        c.select(0);
+        return c;
+    }
+
+    public Label createTextLine() {
+        return new Label(this.shell, SWT.NONE);
     }
 
     public enum ColorValue {
