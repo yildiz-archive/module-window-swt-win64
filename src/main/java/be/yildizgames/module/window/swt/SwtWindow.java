@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -88,14 +90,20 @@ public final class SwtWindow {
         this.shell.setBackgroundImage(this.getImage(background));
     }
 
+    public void setBackground(final Color background) {
+        this.shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
+        this.shell.setBackground(new org.eclipse.swt.graphics.Color(this.shell.getDisplay(), background.red, background.green, background.blue));
+    }
+
     /**
      * Set the background color.
+     * @deprecated use setBackground instead
      *
      * @param background color to set as background.
      */
+    @Deprecated
     public void setBackgroundColor(final Color background) {
-        this.shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        this.shell.setBackground(new org.eclipse.swt.graphics.Color(this.shell.getDisplay(), background.red, background.green, background.blue));
+        this.setBackground(background);
     }
 
     public void setWindowIcon(final String file) {
@@ -209,6 +217,10 @@ public final class SwtWindow {
         this.shell.setVisible(true);
     }
 
+    public void hide() {
+        this.shell.setVisible(false);
+    }
+
     public void run() {
         while (!shell.isDisposed() && shell.isVisible()) {
             if (!this.display.readAndDispatch())
@@ -242,6 +254,20 @@ public final class SwtWindow {
     public Label createTextLine() {
         return new Label(this.shell, SWT.NONE);
     }
+
+    public Menu createMenuBar() {
+        Menu menu = new Menu(shell, SWT.BAR);
+        this.shell.setMenuBar(menu);
+        return menu;
+    }
+
+    public Menu createSubMenu(MenuItem item) {
+        Menu menu = new Menu(shell, SWT.DROP_DOWN);
+        item.setMenu(menu);
+        return menu;
+    }
+
+
 
     public enum ColorValue {
         WHITE(SWT.COLOR_WHITE);
