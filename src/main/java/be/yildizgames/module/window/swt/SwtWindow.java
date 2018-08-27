@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -133,6 +134,10 @@ public final class SwtWindow {
         button.addListener(SWT.MouseEnter, e -> button.setImage(hover));
         button.addListener(SWT.MouseExit, e -> button.setImage(background));
         return button;
+    }
+
+    public Tree createTree() {
+        return new Tree(this.shell, SWT.NONE);
     }
 
     public Label createLabel(final String text, final ColorValue color, final Font font) {
