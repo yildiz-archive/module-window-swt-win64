@@ -147,6 +147,7 @@ public final class SwtWindow {
     public Tree createTree(int w, int h, TreeElement... elements) {
         Tree tree = new Tree(this.shell, SWT.NONE);
         tree.setSize(w, h);
+        tree.setBackground(this.shell.getBackground());
         for(TreeElement element : elements) {
             TreeItem item = new TreeItem(tree, 0);
             item.setText(element.title);
