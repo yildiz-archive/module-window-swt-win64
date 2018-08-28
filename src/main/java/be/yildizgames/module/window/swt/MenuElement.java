@@ -4,9 +4,9 @@ public class MenuElement {
 
     final String title;
 
-    final MenuBehavior behavior;
+    final SelectionBehavior behavior;
 
-    public MenuElement(String title, MenuBehavior behavior) {
+    public MenuElement(String title, SelectionBehavior behavior) {
         super();
         this.title = title;
         this.behavior = behavior;

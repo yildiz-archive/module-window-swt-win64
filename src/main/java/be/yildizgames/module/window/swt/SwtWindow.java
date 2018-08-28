@@ -25,11 +25,15 @@
 package be.yildizgames.module.window.swt;
 
 import be.yildizgames.module.color.Color;
+import be.yildizgames.module.window.GraphicContextContainer;
+import be.yildizgames.module.window.ScreenSize;
+import be.yildizgames.module.window.WindowHandle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
@@ -267,5 +271,11 @@ public final class SwtWindow {
         FileDialog fd = new FileDialog(this.shell, SWT.OPEN);
         fd.setText(title);
         return fd;
+    }
+
+    public Canvas createCanvas(int width, int height) {
+        Canvas canvas = new Canvas(this.shell, SWT.NONE);
+        canvas.setSize(width, height);
+        return canvas;
     }
 }

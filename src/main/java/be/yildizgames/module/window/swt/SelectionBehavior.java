@@ -5,7 +5,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 
 @FunctionalInterface
-public interface MenuBehavior extends SelectionListener {
+public interface SelectionBehavior extends SelectionListener {
 
     default void widgetDefaultSelected(SelectionEvent e) {
     }

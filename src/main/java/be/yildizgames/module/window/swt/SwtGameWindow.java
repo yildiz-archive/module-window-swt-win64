@@ -46,7 +46,7 @@ import java.io.InputStream;
  *
  * @author Grégory Van den Borre
  */
-final class SwtGameWindow {
+public final class SwtGameWindow {
 
     /**
      * Flag to enable or not the full screen mode when building the window.
@@ -98,7 +98,7 @@ final class SwtGameWindow {
      *
      * @param swtShell Shell to use as container this window.
      */
-    void initialize(final Shell swtShell) {
+    public void initialize(final Shell swtShell) {
         this.shell = swtShell;
         this.shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
 
