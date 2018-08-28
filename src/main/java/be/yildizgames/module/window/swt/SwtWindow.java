@@ -26,17 +26,13 @@ package be.yildizgames.module.window.swt;
 
 import be.yildizgames.module.color.Color;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -44,9 +40,11 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,6 +68,16 @@ public final class SwtWindow {
         super();
         this.shell = shell;
         this.display = shell.getDisplay();
+    }
+
+    public SwtWindow() {
+        super();
+        this.shell = new Shell();
+        this.display = shell.getDisplay();
+    }
+
+    public SwtWindow(SwtWindow parent) {
+        this(new Shell(parent.shell));
     }
 
     public void addMouseMoveListener(final Listener listener) {
@@ -136,11 +144,27 @@ public final class SwtWindow {
         return button;
     }
 
-    public Tree createTree() {
-        return new Tree(this.shell, SWT.NONE);
+    public Tree createTree(int w, int h, TreeElement... elements) {
+        Tree tree = new Tree(this.shell, SWT.NONE);
+        tree.setSize(w, h);
+        for(TreeElement element : elements) {
+            TreeItem item = new TreeItem(tree, 0);
+            item.setText(element.title);
+            element.getChildren().forEach(e -> generate(item, e));
+        }
+        tree.setEnabled(true);
+        return tree;
     }
 
-    public Label createLabel(final String text, final ColorValue color, final Font font) {
+    private static void generate(TreeItem parent, TreeElement element) {
+        TreeItem item = new TreeItem(parent, 0);
+        item.setText(element.title);
+        for(TreeElement e : element.getChildren()) {
+            generate(item, e);
+        }
+    }
+
+    public Label createLabel(final String text, final SwtWindowUtils.ColorValue color, final Font font) {
         Label label = new Label(this.shell, SWT.NONE);
         label.setFont(font);
         label.setForeground(this.shell.getDisplay().getSystemColor(color.value));
@@ -163,48 +187,6 @@ public final class SwtWindow {
         this.display.close();
     }
 
-    public void setText(final Button b, final String text, final Font font) {
-        Image background = new Image(b.getShell().getDisplay(), 128, 30);
-        org.eclipse.swt.graphics.Color c = new org.eclipse.swt.graphics.Color(b.getDisplay(), 220, 220, 220);
-        org.eclipse.swt.graphics.Color h = new org.eclipse.swt.graphics.Color(b.getDisplay(), 255, 255, 255);
-        org.eclipse.swt.graphics.Color t = new org.eclipse.swt.graphics.Color(b.getDisplay(), 10, 10, 10);
-        ButtonHover bh = new ButtonHover();
-        b.addMouseTrackListener(new MouseTrackListener() {
-            @Override
-            public void mouseHover(final MouseEvent e) {
-                bh.hover = true;
-            }
-
-            @Override
-            public void mouseExit(final MouseEvent e) {
-                bh.hover = false;
-            }
-
-            @Override
-            public void mouseEnter(final MouseEvent e) {
-                bh.hover = true;
-            }
-        });
-        b.addPaintListener(new PaintListener() {
-
-            @Override
-            public void paintControl(final PaintEvent e) {
-                GC gcBack = new GC(background);
-                gcBack.setAntialias(SWT.ON);
-                gcBack.setBackground(bh.hover ? h : c);
-                gcBack.setAlpha(255);
-                gcBack.fillRectangle(0, 0, b.getBounds().width, b.getBounds().height);
-                gcBack.setForeground(t);
-                gcBack.setFont(font);
-                gcBack.drawText(text, 40, 8, true);
-                gcBack.setAlpha(255);
-                e.gc.drawImage(background, 0, 0);
-                gcBack.dispose();
-            }
-
-        });
-    }
-
     /**
      * Execute a thread by the SWT manager to avoid error SWT thread access.
      *
@@ -212,10 +194,6 @@ public final class SwtWindow {
      */
     void execute(final Runnable r) {
         this.display.syncExec(r);
-    }
-
-    public Shell getShell() {
-        return shell;
     }
 
     public void show() {
@@ -260,41 +238,33 @@ public final class SwtWindow {
         return new Label(this.shell, SWT.NONE);
     }
 
-    public Menu createMenuBar() {
-        Menu menu = new Menu(shell, SWT.BAR);
+    public Menu createMenuBar(MenuBarElement... barElements) {
+        Menu menu = new Menu(this.shell, SWT.BAR);
         this.shell.setMenuBar(menu);
-        return menu;
-    }
-
-    public Menu createSubMenu(MenuItem item) {
-        Menu menu = new Menu(shell, SWT.DROP_DOWN);
-        item.setMenu(menu);
-        return menu;
-    }
-
-
-
-    public enum ColorValue {
-        WHITE(SWT.COLOR_WHITE);
-
-        private final int value;
-
-        @SuppressWarnings("UnnecessaryEnumModifier")
-        ColorValue(final int color) {
-            this.value = color;
+        for(MenuBarElement e : barElements) {
+            this.createMenu(menu, e.title, e.getChildren());
         }
+
+        return menu;
     }
 
-    /**
-     * Simple wrapper to be used in anonymous class.
-     *
-     * @author Van den Borre Grégory
-     */
-    private final class ButtonHover {
+    private void createMenu(Menu menu, String titleText, List<MenuElement> elements) {
+        MenuItem title = new MenuItem(menu, SWT.CASCADE);
+        title.setText("&" + titleText);
+        Menu sub = new Menu(this.shell, SWT.DROP_DOWN);
+        title.setMenu(sub);
+        elements.forEach(elmt -> createMenuElement(sub, elmt));
+    }
 
-        /**
-         * Flag if mouse is over button or not.
-         */
-        private boolean hover = false;
+    private static void createMenuElement(Menu parent, MenuElement e) {
+        MenuItem p = new MenuItem(parent, SWT.PUSH);
+        p.setText("&" + e.title);
+        p.addSelectionListener(e.behavior);
+    }
+
+    public FileDialog createOpenFileDialog(String title) {
+        FileDialog fd = new FileDialog(this.shell, SWT.OPEN);
+        fd.setText(title);
+        return fd;
     }
 }
