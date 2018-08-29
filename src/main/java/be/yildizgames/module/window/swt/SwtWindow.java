@@ -191,6 +191,10 @@ public final class SwtWindow {
         this.shell.getDisplay().close();
     }
 
+    Cursor getCursor() {
+        return this.shell.getCursor();
+    }
+
     /**
      * Execute a thread by the SWT manager to avoid error SWT thread access.
      *

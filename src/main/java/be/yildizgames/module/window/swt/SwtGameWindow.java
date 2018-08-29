@@ -95,10 +95,12 @@ public final class SwtGameWindow {
         Image tmpImage = this.window.getImage("engine.png");
 
         this.loadingBackground = new Image(this.window.getShell().getDisplay(), tmpImage.getImageData().scaledTo(this.window.getShell().getBounds().width, this.window.getShell().getBounds().height));
+        this.currentCursor = this.window.getCursor();
         this.window.setCursor(this.invisibleCursor);
+        this.window.setBackground(be.yildizgames.module.color.Color.rgb(100,0,0));
         this.window.setBackground(this.loadingBackground);
         this.canvas = window.createCanvas(window.getWidth(), window.getHeight());
-        this.window.getShell().setLayout(new FillLayout());
+      //  this.window.getShell().setLayout(new FillLayout());
     }
 
     /**
@@ -121,14 +123,14 @@ public final class SwtGameWindow {
     /**
      * Remove resources used during loading.
      */
-    void deleteLoadingResources() {
+    public void deleteLoadingResources() {
         this.loadingBackground.dispose();
     }
 
     /**
      * Set the mouse cursor visible.
      */
-    void showCursor() {
+    public void showCursor() {
         this.window.setCursor(this.currentCursor);
     }
 
