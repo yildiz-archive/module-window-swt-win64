@@ -123,7 +123,7 @@ public final class SwtGameWindow {
     /**
      * Remove resources used during loading.
      */
-    public void deleteLoadingResources() {
+    void deleteLoadingResources() {
         this.loadingBackground.dispose();
     }
 

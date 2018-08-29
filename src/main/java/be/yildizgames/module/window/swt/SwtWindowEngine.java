@@ -42,9 +42,7 @@ import java.util.Map;
  *
  * @author Grégory Van den Borre
  */
-final class SwtWindowEngine implements WindowEngine {
-
-
+public final class SwtWindowEngine implements WindowEngine {
 
     /**
      * SWT game window.
@@ -68,10 +66,22 @@ final class SwtWindowEngine implements WindowEngine {
     /**
      * Simple constructor.
      */
-    private SwtWindowEngine(boolean fullScreen) {
+    public SwtWindowEngine(boolean fullScreen) {
         super();
         System.setProperty("SWT_GTK3", "0");
         this.window = new SwtWindow();
+        this.gameWindow.initialize(this.window, fullScreen);
+        this.hideCursor();
+        this.window.execute(this.window::open);
+    }
+
+    /**
+     * Simple constructor.
+     */
+    public SwtWindowEngine(SwtWindow window, boolean fullScreen) {
+        super();
+        System.setProperty("SWT_GTK3", "0");
+        this.window = window;
         this.gameWindow.initialize(this.window, fullScreen);
         this.hideCursor();
         this.window.execute(this.window::open);

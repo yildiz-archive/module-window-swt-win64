@@ -63,6 +63,7 @@ public final class SwtWindow {
     public SwtWindow(final Shell shell) {
         super();
         this.shell = shell;
+        this.screenSize = new ScreenSize(this.shell.getSize().x,this.shell.getSize().y);
     }
 
     public SwtWindow() {
