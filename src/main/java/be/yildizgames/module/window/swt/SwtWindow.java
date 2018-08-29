@@ -24,10 +24,9 @@
 
 package be.yildizgames.module.window.swt;
 
+import be.yildizgames.common.exception.technical.ResourceMissingException;
 import be.yildizgames.module.color.Color;
-import be.yildizgames.module.window.GraphicContextContainer;
 import be.yildizgames.module.window.ScreenSize;
-import be.yildizgames.module.window.WindowHandle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
@@ -41,47 +40,48 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+import java.io.InputStream;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Grégory Van den Borre
  */
 public final class SwtWindow {
 
-    /**
-     * Associated display.
-     */
-    private final Display display;
 
     private final Shell shell;
 
-    /**
-     * A map containing all the cursor file, use their file name to get them.
-     */
-    private final Map<String, Cursor> cursorList = new HashMap<>();
+    private ScreenSize screenSize;
 
     public SwtWindow(final Shell shell) {
         super();
         this.shell = shell;
-        this.display = shell.getDisplay();
     }
 
     public SwtWindow() {
-        super();
-        this.shell = new Shell();
-        this.display = shell.getDisplay();
+        this(new Shell());
     }
 
     public SwtWindow(SwtWindow parent) {
         this(new Shell(parent.shell));
+    }
+
+    /**
+     * Make the window use all the screen and remove the title bar.
+     */
+    void setFullScreen() {
+        this.shell.setFullScreen(true);
+        this.shell.setFocus();
+        final Monitor m = Display.getDefault().getPrimaryMonitor();
+        this.shell.setBounds(-1, -1, m.getBounds().width + 2, m.getBounds().height + 2);
+        this.screenSize = new ScreenSize(m.getBounds().width, m.getBounds().height);
     }
 
     public void addMouseMoveListener(final Listener listener) {
@@ -108,6 +108,10 @@ public final class SwtWindow {
         this.shell.setBackground(new org.eclipse.swt.graphics.Color(this.shell.getDisplay(), background.red, background.green, background.blue));
     }
 
+    public void setBackground(Image background) {
+        this.shell.setBackgroundImage(background);
+    }
+
     /**
      * Set the background color.
      * @deprecated use setBackground instead
@@ -121,15 +125,6 @@ public final class SwtWindow {
 
     public void setWindowIcon(final String file) {
         this.shell.setImage(this.getImage(file));
-    }
-
-    public void createCursor(final String name, final String path) {
-        this.createCursor(name, path, 0, 0);
-    }
-
-    public void createCursor(final String name, final String path, final int x, final int y) {
-        final Image data = new Image(Display.getCurrent(), this.getClass().getClassLoader().getResourceAsStream(path));
-        this.cursorList.put(name, new Cursor(Display.getCurrent(), data.getImageData(), x, y));
     }
 
     public Button createButton(final String background, final String hover) {
@@ -178,18 +173,22 @@ public final class SwtWindow {
     }
 
     /**
-     * Create an image from a file stored in media.
+     * Retrieve an image, the file is expected to be in same directory as sources, as well in file system than wrapped in a jar file.
      *
-     * @param file File path.
-     * @return The created image.
+     * @param path Relative path from the source folder.
+     * @return An image created from the file.
      */
-    public Image getImage(final String file) {
-        return new Image(this.display, this.getClass().getClassLoader().getResourceAsStream("media/" + file));
+    Image getImage(final String path) {
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream(path);
+        if (is == null) {
+            throw new ResourceMissingException("Cannot find image " + path);
+        }
+        return new Image(this.shell.getDisplay(), is);
     }
 
     public void close() {
         this.shell.close();
-        this.display.close();
+        this.shell.getDisplay().close();
     }
 
     /**
@@ -198,7 +197,7 @@ public final class SwtWindow {
      * @param r Thread to execute.
      */
     void execute(final Runnable r) {
-        this.display.syncExec(r);
+        this.shell.getDisplay().syncExec(r);
     }
 
     public void show() {
@@ -210,9 +209,10 @@ public final class SwtWindow {
     }
 
     public void run() {
+        Display d = shell.getDisplay();
         while (!shell.isDisposed() && shell.isVisible()) {
-            if (!this.display.readAndDispatch())
-                this.display.sleep();
+            if (!d.readAndDispatch())
+                d.sleep();
         }
     }
 
@@ -277,5 +277,29 @@ public final class SwtWindow {
         Canvas canvas = new Canvas(this.shell, SWT.NONE);
         canvas.setSize(width, height);
         return canvas;
+    }
+
+    void open() {
+        this.shell.open();
+    }
+
+    Shell getShell() {
+        return this.shell;
+    }
+
+    public ScreenSize getScreenSize() {
+        return this.screenSize;
+    }
+
+    void checkForEvent() {
+        this.shell.getDisplay().readAndDispatch();
+    }
+
+    org.eclipse.swt.graphics.Color getSystemColor(int c) {
+        return this.shell.getDisplay().getSystemColor(c);
+    }
+
+    void setCursor(Cursor cursor) {
+        this.shell.setCursor(cursor);
     }
 }

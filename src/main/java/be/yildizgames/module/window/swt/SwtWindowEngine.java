@@ -44,52 +44,58 @@ import java.util.Map;
  */
 final class SwtWindowEngine implements WindowEngine {
 
-    /**
-     * SWT display object.
-     */
-    private final SwtDisplayWrapper display = new SwtDisplayWrapper();
+
 
     /**
      * SWT game window.
      */
-    private final SwtGameWindow gameWindow = new SwtGameWindow(true);
+    private final SwtGameWindow gameWindow = new SwtGameWindow();
 
     /**
      * A map containing all the cursor file, use their file name to get them.
      */
     private final Map<Cursor, org.eclipse.swt.graphics.Cursor> cursorList = new HashMap<>();
 
+    private final SwtWindow window;
 
     /**
      * Simple constructor.
      */
     SwtWindowEngine() {
+        this(true);
+    }
+
+    /**
+     * Simple constructor.
+     */
+    private SwtWindowEngine(boolean fullScreen) {
         super();
         System.setProperty("SWT_GTK3", "0");
-        this.gameWindow.initialize(this.display.buildShell());
+        this.window = new SwtWindow();
+        this.gameWindow.initialize(this.window, fullScreen);
         this.hideCursor();
-        this.display.execute(this.gameWindow::open);
+        this.window.execute(this.window::open);
     }
 
     @Override
     public final void setWindowTitle(final String title) {
-        this.gameWindow.setTitle(title);
+        this.window.setWindowTitle(title);
     }
 
     @Override
     public final void setWindowIcon(final String file) {
-        this.gameWindow.setIcon(file);
+        this.window.setWindowIcon(file);
     }
 
     @Override
     public final void createCursor(final Cursor cursor) {
-        final Image data = this.gameWindow.getImage(cursor.getPath());
+        final Image data = this.window.getImage(cursor.getPath());
         this.cursorList.put(cursor, new org.eclipse.swt.graphics.Cursor(Display.getCurrent(), data.getImageData(), cursor.getX(), cursor.getY()));
     }
 
     @Override
     public final void updateWindow() {
-        this.display.checkForEvent();
+        this.window.checkForEvent();
     }
 
     /**
@@ -125,7 +131,7 @@ final class SwtWindowEngine implements WindowEngine {
 
     @Override
     public final ScreenSize getScreenSize() {
-        return this.gameWindow.getScreenSize();
+        return this.window.getScreenSize();
     }
 
     @Override

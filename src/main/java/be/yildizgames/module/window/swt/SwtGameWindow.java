@@ -24,22 +24,14 @@
 
 package be.yildizgames.module.window.swt;
 
-import be.yildizgames.common.exception.technical.ResourceMissingException;
-import be.yildizgames.module.window.ScreenSize;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Monitor;
-import org.eclipse.swt.widgets.Shell;
-
-import java.io.InputStream;
 
 /**
  * Game main rendering window.
@@ -48,15 +40,12 @@ import java.io.InputStream;
  */
 public final class SwtGameWindow {
 
-    /**
-     * Flag to enable or not the full screen mode when building the window.
-     */
-    private boolean fullScreenMode;
+
 
     /**
      * The SWT shell.
      */
-    private Shell shell;
+    private SwtWindow window;
 
     /**
      * Canvas for the window and the 3d context.
@@ -79,60 +68,37 @@ public final class SwtGameWindow {
     private Cursor invisibleCursor;
 
     /**
-     * Game window size.
+     * Constructor.
      */
-    private ScreenSize screenSize;
-
-    /**
-     * Full constructor.
-     *
-     * @param fullScreen True if full screen must be enabled.
-     */
-    SwtGameWindow(final boolean fullScreen) {
+    public SwtGameWindow() {
         super();
-        this.fullScreenMode = fullScreen;
     }
 
     /**
      * Build the window in the SWT thread.
      *
-     * @param swtShell Shell to use as container this window.
+     * @param window Window to use as container.
      */
-    public void initialize(final Shell swtShell) {
-        this.shell = swtShell;
-        this.shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
+    public void initialize(final SwtWindow window, boolean fullScreenMode) {
+        this.window = window;
+        this.window.getShell().setBackgroundMode(SWT.INHERIT_DEFAULT);
 
-        final Color white = this.shell.getDisplay().getSystemColor(SWT.COLOR_WHITE);
-        final Color black = this.shell.getDisplay().getSystemColor(SWT.COLOR_BLACK);
-        final PaletteData palette = new PaletteData(new RGB[]{white.getRGB(), black.getRGB()});
+        final Color white = this.window.getSystemColor(SWT.COLOR_WHITE);
+        final Color black = this.window.getSystemColor(SWT.COLOR_BLACK);
+        final PaletteData palette = new PaletteData(white.getRGB(), black.getRGB());
         final ImageData sourceData = new ImageData(16, 16, 1, palette);
         sourceData.transparentPixel = 0;
-        this.invisibleCursor = new Cursor(this.shell.getDisplay(), sourceData, 0, 0);
-        if (this.fullScreenMode) {
-            this.setFullScreen();
+        this.invisibleCursor = new Cursor(window.getShell().getDisplay(), sourceData, 0, 0);
+        if (fullScreenMode) {
+            this.window.setFullScreen();
         }
-        Image tmpImage = this.getImage("engine.png");
+        Image tmpImage = this.window.getImage("engine.png");
 
-        this.loadingBackground = new Image(this.shell.getDisplay(), tmpImage.getImageData().scaledTo(this.shell.getBounds().width, this.shell.getBounds().height));
-        this.shell.setCursor(this.invisibleCursor);
-        this.shell.setBackgroundImage(this.loadingBackground);
-        this.canvas = new Canvas(this.shell, SWT.NONE);
-        this.canvas.setSize(this.shell.getSize());
-        this.shell.setLayout(new FillLayout());
-    }
-
-    /**
-     * Retrieve an image, the file is expected to be in same directory as sources, as well in file system than wrapped in a jar file.
-     *
-     * @param path Relative path from the source folder.
-     * @return An image created from the file.
-     */
-    Image getImage(final String path) {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream(path);
-        if (is == null) {
-            throw new ResourceMissingException("Cannot find image " + path);
-        }
-        return new Image(this.shell.getDisplay(), is);
+        this.loadingBackground = new Image(this.window.getShell().getDisplay(), tmpImage.getImageData().scaledTo(this.window.getShell().getBounds().width, this.window.getShell().getBounds().height));
+        this.window.setCursor(this.invisibleCursor);
+        this.window.setBackground(this.loadingBackground);
+        this.canvas = window.createCanvas(window.getWidth(), window.getHeight());
+        this.window.getShell().setLayout(new FillLayout());
     }
 
     /**
@@ -142,31 +108,13 @@ public final class SwtGameWindow {
      */
     void setCursor(final Cursor cursor) {
         this.currentCursor = cursor;
-        this.shell.setCursor(this.currentCursor);
-    }
-
-    /**
-     * Make the window use all the screen and remove the title bar.
-     */
-    private void setFullScreen() {
-        this.shell.setFullScreen(true);
-        this.shell.setFocus();
-        final Monitor m = Display.getDefault().getPrimaryMonitor();
-        this.shell.setBounds(-1, -1, m.getBounds().width + 2, m.getBounds().height + 2);
-        this.screenSize = new ScreenSize(m.getBounds().width, m.getBounds().height);
-    }
-
-    /**
-     * Open the window.
-     */
-    void open() {
-        this.shell.open();
+        this.window.setCursor(this.currentCursor);
     }
 
     /**
      * @return The SWT canvas.
      */
-    Canvas getCanvas() {
+    public Canvas getCanvas() {
         return this.canvas;
     }
 
@@ -181,39 +129,13 @@ public final class SwtGameWindow {
      * Set the mouse cursor visible.
      */
     void showCursor() {
-        this.shell.setCursor(this.currentCursor);
+        this.window.setCursor(this.currentCursor);
     }
 
     /**
      * Set the mouse cursor invisible.
      */
     void hideCursor() {
-        this.shell.setCursor(this.invisibleCursor);
-    }
-
-    /**
-     * Set the game window title.
-     *
-     * @param title Title to display.
-     */
-    void setTitle(final String title) {
-        this.shell.setText(title);
-        Display.setAppName(title);
-    }
-
-    /**
-     * Set the window icon.
-     *
-     * @param file Path of the file to use.
-     */
-    void setIcon(final String file) {
-        this.shell.setImage(this.getImage(file));
-    }
-
-    /**
-     * @return The game window size.
-     */
-    public ScreenSize getScreenSize() {
-        return this.screenSize;
+        this.window.setCursor(this.invisibleCursor);
     }
 }
