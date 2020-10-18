@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
     <name>Yildiz Module Window Swt win64</name>
     <description>Swt windows implementation.</description>
-    <url>https://bitbucket.org/yildiz-engine-team/module-window-swt-win64</url>
+    <url>https://github.com/yildiz-online/module-window-swt-win64</url>
 
     <artifactId>module-window-swt-win64</artifactId>
     <version>1.0.6-SNAPSHOT</version>
@@ -34,9 +34,9 @@
     <packaging>jar</packaging>
     <inceptionYear>2018</inceptionYear>
     <scm>
-        <connection>scm:git:https://bitbucket.org/yildiz-engine-team/module-window-swt-win64</connection>
-        <developerConnection>scm:git:https://bitbucket.org/yildiz-engine-team/module-window-swt-win64</developerConnection>
-        <url>https://bitbucket.org/yildiz-engine-team/module-window-swt-win64</url>
+        <connection>scm:git:https://github.com/yildiz-online/module-window-swt-win64</connection>
+        <developerConnection>scm:git:https://github.com/yildiz-online/module-window-swt-win64</developerConnection>
+        <url>https://github.com/yildiz-online/module-window-swt-win64</url>
     </scm>
     <parent>
         <groupId>be.yildiz-games</groupId>
