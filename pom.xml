@@ -45,7 +45,7 @@
     </parent>
 
     <properties>
-        <dependency.swt.version>3.115.0</dependency.swt.version>
+        <dependency.swt.version>3.115.100</dependency.swt.version>
     </properties>
 
     <dependencies>
